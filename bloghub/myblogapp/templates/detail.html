@@ -1,0 +1,278 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Detail</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    
+    <style>
+
+        .add-blog-btn {
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 10px 20px;
+                    background-color: #007bff;
+                    color: #fff;
+                    border: none;
+                    border-radius: 10px;
+                    cursor: pointer;
+                }
+
+        .add-blog-btn2 {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .blog-form-container {
+            display: none;
+            position: fixed;
+            bottom: 70px;
+            right: 20px;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        
+        .blog-form-container2 {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 140px;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .alert {
+  padding: 20px;
+  background-color: #f44336;
+  color: white;
+  width: 70%;
+}
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
+}
+
+        .home-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .home-btn2 {
+            position: absolute;
+            top: 70px;
+            right: 150px;
+            padding: 10px 20px;
+            background-color: #d02d0c;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .container {
+    display: flex; /* Use flexbox */
+}
+
+.image-container {
+    width: 28rem;
+    height: 300px;
+    flex-shrink: 0; /* Prevent image from shrinking */
+    margin-right: 50px; /* Add some space between image and ratings */
+}
+
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.info-container {
+    flex-grow: 1; /* Allow info container to grow to fill available space */
+}
+
+ul {
+    padding: 0;
+    margin: 0;
+}
+ul li {
+    list-style: none; /* Remove default list styles */
+}
+
+
+        
+    </style>
+    
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="{% url 'myblogapp:index' %}">blogHUB</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+              <a class="nav-link active" aria-current="page" href="{% url 'myblogapp:index' %}">Home</a>
+              <a class="nav-link"  class="navbar-nav ms-auto" onclick="toggleForm()">Update Blog details</a>
+              <a class="nav-link " aria-current="page" href="/blog/delete/{{blog_list.id}}">Delete Blog</a>
+              <a class="nav-link"  class="navbar-nav ms-auto" class="add-blog-btn2" onclick="toggleForm2()">Give Review </a>
+              <a class="nav-link" href="/blog/top_rated/">Top</a>
+              <a class="nav-link" href="{% url 'myblogapp:home_hai' %}">Logout</a>
+              
+            </div>
+          </div>
+        </div>
+      </nav>
+    
+           
+        <!-- End -->
+
+    <!-- Delete button -->
+        <!-- start -->
+        <a href="{% url 'myblogapp:home_hai' %}" ><button  class="home-btn2">Logout</button></a>
+        <!-- End -->
+    
+    <!-- Update blog button that open form -->
+        <!-- start -->
+        {% if messages %}
+      
+        {% for message in messages %}
+              <div class="alert">
+                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+                <h class="text-center">{{ message }}</h3>
+              </div>
+        {% endfor %}
+      
+    {% endif %}
+
+            <div class="blog-form-container" id="blogForm1">
+                <form action="/blog/update/{{blog_list.id}}/" method="post" >
+                    {% csrf_token %}
+                    <h3>Update Blog</h3>
+                    <label for="blog_name">Blog Name:</label>
+                    <input type="text"  name="blog_name" ><br><br>
+
+                    <label for="description">Description:</label><br>
+                    <textarea  name="description" rows="2" cols="30" ></textarea><br><br>
+
+                    <label for="content">Content:</label><br>
+                    <textarea  name="content" rows="8" cols="50" ></textarea><br><br>
+                    
+                    <br><br>
+
+                    <button type="submit"  >Update</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- End update button -->
+
+    <!-- Give Rating button  -->
+            <!-- Start -->
+            <div>
+                <button class="add-blog-btn2" onclick="toggleForm2()">Give review</button>
+
+                <div class="blog-form-container2" id="blogForm2">
+                        <form  action="/blog/rating/{{blog_list.id}}/" method="post" >
+                            {% csrf_token %}
+                            <h3>Give Review</h3>
+                            <label for="Username">Username:</label>
+                            <input type="text"  name="username" >
+                            <label for="Email">Email:</label>
+                            <input type="email"  name="email" >
+                            <label for="Rating">Rating</label>
+                            <input type="number"  name="rating" min="1" max="5"  >
+                            
+                            <br><br>
+
+                            <button type="submit"  >Give</button>
+                        </form>
+                </div>
+            </div>
+    <!-- End --> 
+    
+    <br>
+    <br>
+    <h1 class ="text-center">{{ blog_list.blog_name }}</h1>
+    
+    <hr>
+    <div class="container">
+        <div class="image-container">
+            <img src="/media/{{ blog_list.image }}" alt="{{ blog_list.blog_name }} image">
+        </div>
+        <div class="info-container">
+            <h4>Rating given by you:- {{ ratings }}⭐</h4>
+            <h4>All Ratings:</h4>
+            <ul>
+                {% for rate in rating_list %}
+                    <li>{{ rate.user.username }} - {{ rate.rating }} ⭐</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    
+        
+            <br>
+            <h4>Description  </h4>
+            <p>{{ blog_list.description }}</p>
+            
+            <br>
+            <h4>Content</h4>
+            <p>{{ blog_list.content }}</p>
+            
+           
+         
+            
+        </div>
+    </div>
+
+    <script>
+        function toggleForm() {
+            var form = document.getElementById("blogForm1");
+            if (form.style.display === "none" || form.style.display === "") {
+                form.style.display = "block";
+            } else {
+                form.style.display = "none";
+            }
+        }
+        function toggleForm2() {
+            var form = document.getElementById("blogForm2");
+            if (form.style.display === "none" || form.style.display === "") {
+                form.style.display = "block";
+            } else {
+                form.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
